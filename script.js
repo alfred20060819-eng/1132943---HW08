@@ -1,6 +1,7 @@
 const boardE1 = document.getElementById("board");
 const cells = Array.from(document.querySelectorAll(".cell"));
 const btnReset = document.getElementById("reset");
+const btnResetAll = document.getElementById("reset-all"); // 确保正确引用
 const turnEl = document.getElementById("turn");
 const stateEl = document.getElementById("state");
 const scoreXEl = document.getElementById("score-x");
@@ -15,12 +16,12 @@ let scoreDraw = 0;
 const WIN_LINES = [
     [0, 1, 2],
     [3, 4, 5],
-    [6, 7, 8], // 橫排
+    [6, 7, 8], // 横排
     [0, 3, 6],
     [1, 4, 7],
     [2, 5, 8], // 直排
     [0, 4, 8],
-    [2, 4, 6] // 斜線
+    [2, 4, 6] // 斜线
 ];
 
 function init() {
@@ -32,7 +33,7 @@ function init() {
         c.className = "cell";
         c.disabled = false;
     });
-    turnEl.textContent = current;
+    turnEl.textContent = `目前輪到：${current}`;
     stateEl.textContent = "";
 }
 
@@ -52,7 +53,7 @@ function place(idx) {
 
 function switchTurn() {
     current = current === "X" ? "O" : "X";
-    turnEl.textContent = current;
+    turnEl.textContent = `目前輪到：${current}`;
 }
 
 function evaluate() {
@@ -69,7 +70,7 @@ function evaluate() {
 function endGame({ winner, line }) {
     active = false;
     if (winner) {
-        stateEl.textContent = `${winner} 勝利！`; // 使用反引号进行模板字符串插值
+        stateEl.textContent = `${winner} 勝利！`;
         line.forEach((i) => cells[i].classList.add("win"));
         if (winner === "X") scoreX++;
         else scoreO++;
@@ -93,7 +94,7 @@ cells.forEach((cell) => {
         place(idx);
     });
 });
-//
+
 init();
 
 btnReset.addEventListener("click", init);
@@ -103,23 +104,3 @@ btnResetAll.addEventListener("click", () => {
     updateScoreboard();
     init();
 });
-
-function clearBoard() {
-    cells.forEach((c) => {
-        c.textContent = "";
-        c.removeAttribute("data-mark");
-        c.disabled = false;
-    });
-}
-
-cells.forEach((cell) => {
-    cell.addEventListener("click", () => {
-        // 目前只是做示範：加上一個 data-mark 屬性，顯示為 X（後續可改為輪流下子）
-        if (cell.getAttribute("data-mark")) return;
-        cell.setAttribute("data-mark", "X");
-        cell.textContent = "X";
-    });
-});
-
-btnReset.addEventListener("click", clearBoard);
-clearBoard();
